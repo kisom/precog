@@ -26,6 +26,8 @@
 
 #include "hash.h"
 
+static void     test_hello_world(void);
+
 
 /*
  * Suite set up and tear down functions.
