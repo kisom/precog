@@ -20,18 +20,31 @@
 #define __VOLTAIRE_VINDEX_H
 
 #include <sys/queue.h>
+#include <stdint.h>
+#include <stdlib.h>
 
 struct key {
         char                    *name;
-        TAILQ_ENTRY(key)        *keys;
+        size_t                   name_len;
+        TAILQ_ENTRY(key)         keys;
 };
 TAILQ_HEAD(tq_key, key);
 
-struct value_bucket {
-        char            *hash;
-        char            *value;
-        size_t           value_len;
+struct vbucket {
+        uint8_t         *hash;
+        uint8_t         *value;
+        uint64_t         value_len;
+        uint64_t         nkeys;
         struct tq_key   *keys;
 };
+
+
+char            *voltaire_bucket_filename(char *);
+size_t           voltaire_bucket_filename_len(void);
+struct vbucket  *voltaire_bucket_create(uint8_t *, uint64_t, char *, uint64_t);
+int              voltaire_bucket_add(struct vbucket *, char *, uint64_t);
+int              voltaire_bucket_has(struct vbucket *, char *, uint64_t);
+int              voltaire_bucket_del(struct vbucket *, char *, uint64_t);
+int              voltaire_bucket_destroy(struct vbucket *);
 
 #endif
