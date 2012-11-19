@@ -16,22 +16,11 @@
  * ---------------------------------------------------------------------
  */
 
-#ifndef __VOLTAIRE_VINDEX_H
-#define __VOLTAIRE_VINDEX_H
+#ifndef __VOLTAIRE_VOLTAIRE_H
+#define __VOLTAIRE_VOLTAIRE_H
 
-#include <sys/queue.h>
+int     voltaire_init(void);
+int     voltaire_init_ok(void);
 
-struct key {
-        char                    *name;
-        TAILQ_ENTRY(key)        *keys;
-}
-TAILQ_HEAD(tq_key, key)
-
-struct value_bucket {
-        char            *hash;
-        char            *value;
-        size_t           value_len;
-        struct tq_key   *keys;
-}
 
 #endif

@@ -16,22 +16,34 @@
  * ---------------------------------------------------------------------
  */
 
-#ifndef __VOLTAIRE_VINDEX_H
-#define __VOLTAIRE_VINDEX_H
+#include <sys/types.h>
+#include <err.h>
 
-#include <sys/queue.h>
+/*
+ * Initialise the library before creating new key-value stores. This is
+ * required for the crypto code to work. If you are using and initial-
+ * ising libgcrypt in the client code, this is unnecessary.
+ */
+int
+voltaire_init()
+{
+        if (!gcry_check_version (GCRYPT_VERSION)) {
+                errx(EX_CONFIG, "libgcrypt version mismatch");
+                exit (2);
+        }
 
-struct key {
-        char                    *name;
-        TAILQ_ENTRY(key)        *keys;
+        /* Disable secure memory.  */
+        gcry_control (GCRYCTL_DISABLE_SECMEM, 0);
+        gcry_control (GCRYCTL_INITIALIZATION_FINISHED, 0);
 }
-TAILQ_HEAD(tq_key, key)
 
-struct value_bucket {
-        char            *hash;
-        char            *value;
-        size_t           value_len;
-        struct tq_key   *keys;
+
+/*
+ * provide a wrapper to gcry_control so end-users aren't required to
+ * call libgcrypt if they aren't using it in their code.
+ */
+int
+voltaire_init_ok()
+{
+        return !(0 == gcry_control(GCRYCTL_INITIALIZATION_FINISHED_P));
 }
-
-#endif
