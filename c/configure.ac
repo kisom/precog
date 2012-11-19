@@ -8,7 +8,7 @@ AM_SILENT_RULES([yes])
 AC_CONFIG_SRCDIR([src/vindex.h])
 AC_CHECK_HEADERS
 AC_CHECK_HEADER([sys/queue.h], [], 
-    [AC_MSG_ERROR([can't find queue library])])
+    [AC_MSG_ERROR([could not find queue library])])
 AC_CONFIG_HEADERS([src/config.h])
 AC_CANONICAL_HOST
 AC_MSG_WARN([need to write: tests, docs])
@@ -17,18 +17,30 @@ AC_CONFIG_FILES([src/Makefile Makefile])
 AC_PROG_CC
 AM_PROG_CC_C_O
 AC_PROG_INSTALL
-
-LD_FLAGS=-L/usr/local/lib
+AC_PROG_RANLIB
 
 dnl set up some additional useful macros
-AC_DEFINE([PACKAGE_LICENSE], ["License ISC/public domain:"],
+AC_DEFINE([PACKAGE_LICENSE], ["License ISC:"],
           [license used by the package])
 AC_DEFINE([PACKAGE_LICENSE_URL], 
-          ["http://www.kyleisom.net/code/license.txt"],
+          ["http://tyrfingr.is/licenses/LICENSE.ISC"],
           [where the user can find a copy of the license])
 AC_DEFINE([PACKAGE_COPYRIGHT], 
-          ["Copyright (c) 2012 Kyle Isom <coder@kyleisom.net>"],
+          ["Copyright (c) 2012 Kyle Isom <kyle@tyrfingr.is>"],
           [copyright tagline])
+
+dnl
+
+dnl check for libgcrypt
+AC_SEARCH_LIBS(gcry_check_version, [gcrypt], 
+               [have_gcrypt="yes"], [have_gcrypt="no"])
+NO_GCRYPT="
+        Could not find required library libgcrypt.
+"
+ 
+if test "x${have_gcrypt}" = xno; then
+    AC_MSG_ERROR([${NO_GCRYPT}])
+fi
 
 
 dnl check for libcunit
