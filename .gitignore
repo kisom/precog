@@ -1,2 +1,27 @@
+# python crap
 *.pyc
 python/.index
+
+# C autoconf crap
+autom4te.cache
+*.in
+config.*
+compile
+*.m4
+configure
+depcomp
+*.info
+mdate-sh
+stamp-*
+texinfo.tex
+version.texi
+install-sh
+missing
+Makefile
+.deps
+
+# products
+*_test
+
+# *.log is output from make check
+*.log
