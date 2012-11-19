@@ -3,6 +3,8 @@
 python/.index
 
 # C autoconf crap
+*.o
+*.a
 autom4te.cache
 *.in
 config.*
