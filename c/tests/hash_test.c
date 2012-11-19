@@ -62,11 +62,10 @@ test_hello_world()
         char hw_hexhash[] = "b7e23ec29af22b0b4e41da31e868d57226121c84";
         char *hash = NULL;
 
-        printf("[-] strlen(hw) -> %u\n", (unsigned int)strlen(hw));
-        rv = voltaire_hexhash_data(hw, strlen(hw), (uint8_t *)hash);
+        rv = voltaire_hexhash_data(hw, strlen(hw), (uint8_t **)&hash);
         CU_ASSERT(rv == EXIT_SUCCESS);
 
-        CU_ASSERT(0 == strncmp(hw, hash, strlen(hw)));
+        CU_ASSERT(0 == strncmp(hw_hexhash, hash, strlen(hw_hexhash)));
         free(hash);
 }
 

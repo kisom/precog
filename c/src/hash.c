@@ -48,21 +48,17 @@ voltaire_get_hexhashlen()
  * caller to ensure that hash is of the appropriate size.
  */
 int
-voltaire_hash_data(uint8_t *data, size_t data_len, uint8_t *hash)
+voltaire_hash_data(uint8_t *data, size_t data_len, uint8_t **hash)
 {
         int hashlen, i;
 
         hashlen = voltaire_get_hashlen();
-        if (hash == NULL) {
-                hash = (uint8_t *)malloc(sizeof(uint8_t) * hashlen);
-                if (NULL == hash)
+        if (*hash == NULL) {
+                *hash = (uint8_t *)malloc(sizeof(uint8_t) * hashlen);
+                if (NULL == *hash)
                         return EXIT_FAILURE;
         }
-        gcry_md_hash_buffer(HASH_ALGO, hash, data, data_len);
-        printf("[-] hash_data: dumping hash\n");
-        for (i = 0; i < voltaire_get_hashlen(); i++)
-                printf("%02x ", hash[i]);
-        printf("\n");
+        gcry_md_hash_buffer(HASH_ALGO, *hash, data, data_len);
         return EXIT_SUCCESS;
 }
 
@@ -73,34 +69,30 @@ voltaire_hash_data(uint8_t *data, size_t data_len, uint8_t *hash)
  * caller to ensure that hash is of the appropriate size.
  */
 int
-voltaire_hexhash_data(uint8_t *data, size_t data_len, uint8_t *hash)
+voltaire_hexhash_data(uint8_t *data, size_t data_len, uint8_t **hash)
 {
-        int hashlen, i;
+        int binhashlen, hashlen, i;
         uint8_t *binhash = NULL;
         uint8_t *hashp = NULL;
 
+        binhashlen = voltaire_get_hashlen();
         hashlen = voltaire_get_hexhashlen();
-        printf("[+] allocating memory for hash\n");
-        if (hash == NULL) {
-                hash = (uint8_t *)malloc(sizeof(uint8_t) * hashlen);
-                if (NULL == hash)
+        if (*hash == NULL) {
+                *hash = (uint8_t *)malloc(sizeof(uint8_t) * hashlen);
+                if (NULL == *hash)
                         return EXIT_FAILURE;
-                hashp = hash;
+                hashp = *hash;
         }
 
-        printf("[+] getting binary hash\n");
         if (EXIT_SUCCESS != voltaire_hash_data(data, data_len, &binhash)) {
                 free(hash);
                 return EXIT_FAILURE;
         }
-        printf("[+] dumping binhash");
-        for (i = 0; i < voltaire_get_hashlen(); i++)
-                printf("%02x ", binhash[i]);
-        printf("\n");
 
-        printf("[+] converting binary hash to hexadecimal\n");
-        for (i = 0; i < hashlen; i++, hashp += 2 )
-                snprintf(hashp, 3, "%02x", binhash[i]);
-        printf("[+] done\n");
+        for (i = 0; i < binhashlen; i++, hashp += 2 ) {
+                char hex[3];
+                snprintf(hex, 3, "%02x", binhash[i]);
+                strncat(hashp, hex, 2);
+        }
         return EXIT_SUCCESS;
 }
