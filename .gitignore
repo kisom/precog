@@ -5,6 +5,7 @@ python/.index
 # C autoconf crap
 *.o
 *.a
+*.core
 autom4te.cache
 *.in
 config.*
@@ -21,6 +22,8 @@ install-sh
 missing
 Makefile
 .deps
+*.trs
+test-driver
 
 # products
 *_test
