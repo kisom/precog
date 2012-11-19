@@ -16,3 +16,15 @@
  * ---------------------------------------------------------------------
  */
 
+
+#include "hash.h"
+
+
+char
+*bucket_filename(char *hash) {
+        char *filename;
+        int hashlen;
+
+        hashlen = volaire_get_hexhashsize();
+        filename = (char *)malloc(sizeof(char) * hashlen);
+}
