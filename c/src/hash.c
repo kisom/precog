@@ -18,6 +18,7 @@
 
 #include <gcrypt.h>
 #include <stdio.h>
+#include <stdint.h>
 
 
 #define HASH_ALGO       GCRY_MD_SHA1
@@ -50,7 +51,7 @@ voltaire_get_hexhashlen()
 int
 voltaire_hash_data(uint8_t *data, size_t data_len, uint8_t **hash)
 {
-        int hashlen, i;
+        int hashlen;
 
         hashlen = voltaire_get_hashlen();
         if (*hash == NULL) {
@@ -92,7 +93,7 @@ voltaire_hexhash_data(uint8_t *data, size_t data_len, uint8_t **hash)
         for (i = 0; i < binhashlen; i++, hashp += 2 ) {
                 char hex[3];
                 snprintf(hex, 3, "%02x", binhash[i]);
-                strncat(hashp, hex, 2);
+                strncat((char *)hashp, hex, 2);
         }
         return EXIT_SUCCESS;
 }
