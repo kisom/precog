@@ -25,7 +25,7 @@
 
 struct key {
         char                    *name;
-        size_t                   name_len;
+        uint8_t                  name_len;
         TAILQ_ENTRY(key)         keys;
 };
 TAILQ_HEAD(tq_key, key);

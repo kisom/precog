@@ -19,9 +19,12 @@
 
 #include <sys/queue.h>
 #include <err.h>
+#include <fcntl.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "hash.h"
 #include "vindex.h"
@@ -203,3 +206,39 @@ voltaire_bucket_destroy(struct vbucket *bkt) {
 /*
  * Write a bucket to disk.
  */
+int
+voltaire_bucket_dump(struct vbucket *bkt, const char *topdir)
+{
+        struct key      *current_key;
+        ssize_t          wrsz;
+        char             filename[FILENAME_MAX];
+        char            *bucket_name;
+        int              bucket_fd, rv;
+
+        bucket_name = voltaire_bucket_filename(bkt->hash);
+        if (NULL == bucket_name)
+                return EXIT_FAILURE;
+        snprintf(filename, FILENAME_MAX, "%s/%s", topdir, bucket_name);
+
+        bucket_fd = open(filename, O_WRONLY|O_CREAT|O_TRUNCATE,
+            S_IRUSR | S_IWUSR);
+        if (bucket < 1)
+                return EXIT_FAILURE;
+
+        wrsz = write(bucket_fd, bkt->value_len, sizeof(bkt->value_len));
+        if (wrsz != sizeof(bkt->value_len)) {
+                close(bucket_fd);
+                return EXIT_FAILURE;
+        }
+        wrsz = write(bucket_fd, bkt->value, sizeof(bkt->value) * bkt->value_len);
+        if (wrsz != (sizeof(bkt->value) * bkt->value_len)) {
+                close(bucket_fd);
+                return EXIT_FAILURE;
+        }
+        TAILQ_FOREACH(current_key, bkt->keys, keys) {
+                wrsz = write(bucket_fd, current_key->name_len, sizeof(name_len));
+
+                wrsz = write(bucket_fd, current_key->name,
+                    sizeof(current_key->name) * current_key->name_len);
+        }
+}
