@@ -1,5 +1,5 @@
-AC_PREREQ([2.69])
-AC_INIT([precog],
+AC_PREREQ([2.59])
+AC_INIT([voltaire],
         [0.1.0],
         [coder@kyleisom.net], [],
         [https://github.com/kisom/precog])
