@@ -10,8 +10,13 @@ from Crypto.Hash import SHA
 HASHFUN = SHA
 INDEX_DIR = '.index'
 
+
 class InvalidLookup(Exception):
+    """
+    Exception raised when an invalid lookup occurs.
+    """
     pass
+
 
 class ValueBucket:
     """
@@ -32,6 +37,9 @@ class ValueBucket:
             self.keys = keys
 
     def has(self, keyname):
+        """
+        Determine whether the value bucket has a given key.
+        """
         return keyname in self.keys
 
     def fname(self):
@@ -46,8 +54,8 @@ class ValueBucket:
         """
         Write the bucket to disk.
         """
-        fmt = '>q%dsq' % (len(self.value), )
-        raw = struct.pack(fmt, len(self.value), self.value, len(self.keys))
+        fmt = '>q%ds' % (len(self.value), )
+        raw = struct.pack(fmt, len(self.value), self.value)
         for key in self.keys:
             fmt = '>q%ds' % (len(key), )
             raw += struct.pack(fmt, len(key), key)
@@ -83,6 +91,7 @@ class ValueBucket:
         os.unlink(fname)
         del(self)
 
+
 def load_value(value_hash):
     """
     Load a value from a value's hash.
@@ -94,14 +103,15 @@ def load_value(value_hash):
         value_len = int(struct.unpack('>q', bucket.read(8))[0])
         value = struct.unpack('>%ds' % (value_len,), bucket.read(value_len))
         value = value[0]
-        num_keys = int(struct.unpack('>q', bucket.read(8))[0])
         key_list = []
-        for i in range(num_keys):
+        while not bucket.read(1) == "":
+            bucket.seek(-1, os.SEEK_CUR)
             keylen = int(struct.unpack('>q', bucket.read(8))[0])
             key = struct.unpack('>%ds' % (keylen,), bucket.read(keylen))[0]
             key_list.append(key)
-        value_bucket = ValueBucket(value, key_list) 
+        value_bucket = ValueBucket(value, key_list)
     return value_bucket
+
 
 def __read_keys_from_value__(value_hash):
     bucket_filename = os.path.join(INDEX_DIR, value_hash[:2],
@@ -111,8 +121,8 @@ def __read_keys_from_value__(value_hash):
     with open(bucket_filename) as bucket:
         value_len = int(struct.unpack('>q', bucket.read(8))[0])
         bucket.seek(value_len, os.SEEK_CUR)
-        num_keys = int(struct.unpack('>q', bucket.read(8))[0])
-        for i in range(num_keys):
+        while not bucket.read(1) == "":
+            bucket.seek(-1, os.SEEK_CUR)
             keylen = int(struct.unpack('>q', bucket.read(8))[0])
             key = struct.unpack('>%ds' % (keylen,), bucket.read(keylen))[0]
             key_list.append(key)
@@ -130,6 +140,7 @@ def check(key, value=None, value_hash=None):
 
     keys = __read_keys_from_value__(value_hash)
     return key in keys
+
 
 def lookup(value_hash):
     """
