@@ -72,12 +72,17 @@ voltaire_hash_data(uint8_t *data, size_t data_len, uint8_t **hash)
 int
 voltaire_hexhash_data(uint8_t *data, size_t data_len, uint8_t **hash)
 {
-        int binhashlen, hashlen, i;
+        int      binhashlen, hashlen, i;
         uint8_t *binhash = NULL;
         uint8_t *hashp = NULL;
 
         binhashlen = voltaire_get_hashlen();
         hashlen = voltaire_get_hexhashlen();
+        if (NULL == hash) {
+                hash = (uint8_t **)calloc(1, sizeof(uint8_t *));
+                if (NULL == hash) 
+                        return EXIT_FAILURE;
+        }
         if (*hash == NULL) {
                 *hash = (uint8_t *)malloc(sizeof(uint8_t) * hashlen);
                 if (NULL == *hash)

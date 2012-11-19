@@ -24,8 +24,8 @@
 
 int     voltaire_get_hashlen();
 int     voltaire_get_hexhashlen();
-int     voltaire_hash_data(uint8_t *, size_t, uint8_t *);
-int     voltaire_hexhash_data(uint8_t *, size_t, uint8_t *);
+int     voltaire_hash_data(uint8_t *, size_t, uint8_t **);
+int     voltaire_hexhash_data(uint8_t *, size_t, uint8_t **);
 
 
 #endif
