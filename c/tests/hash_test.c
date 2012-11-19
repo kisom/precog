@@ -22,6 +22,7 @@
 #include <CUnit/Basic.h>
 #include <err.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <sysexits.h>
 
 #include "hash.h"
@@ -46,8 +47,10 @@ cleanup_hash_test()
 
 void destroy_test_registry()
 {
+        CU_ErrorCode cu_err;
         CU_cleanup_registry();
-        exit(CU_get_error);
+        cu_err = CU_get_error();
+        exit((int)cu_err);
 }
 
 
@@ -59,12 +62,12 @@ void destroy_test_registry()
 void
 test_hello_world()
 {
-        int rv;
-        char hw[] = "hello, world";
-        char hw_hexhash[] = "b7e23ec29af22b0b4e41da31e868d57226121c84";
-        char *hash = NULL;
+        int      rv;
+        char     hw[] = "hello, world";
+        char     hw_hexhash[] = "b7e23ec29af22b0b4e41da31e868d57226121c84";
+        char    *hash = NULL;
 
-        rv = voltaire_hexhash_data(hw, strlen(hw), (uint8_t **)&hash);
+        rv = voltaire_hexhash_data((uint8_t *)hw, strlen(hw), (uint8_t **)(&hash));
         CU_ASSERT(rv == EXIT_SUCCESS);
 
         CU_ASSERT(0 == strncmp(hw_hexhash, hash, strlen(hw_hexhash)));
@@ -78,8 +81,8 @@ test_hello_world()
 int
 main(void)
 {
-        CU_pSuite hash_suite = NULL;
-        unsigned int fails = 0;
+        CU_pSuite        hash_suite = NULL;
+        unsigned int     fails = 0;
 
         printf("[+] running tests for hash functions.\n");
 
