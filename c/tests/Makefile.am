@@ -8,5 +8,6 @@ AM_CFLAGS = -Wall -g -I/usr/local/include -I../src -DGCRYPT_NO_DEPRECATED \
 AM_LDFLAGS = -L/usr/local/lib -lcunit
 
 include_HEADERS = *.h
-check_PROGRAMS = hash_test
+check_PROGRAMS = hash_test vindex_test
 hash_test_SOURCES = ../src/hash.c hash_test.c
+vindex_test_SOURCES = ../src/vindex.c vindex_test.c
