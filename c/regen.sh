@@ -1,8 +1,5 @@
 #!/bin/sh
 
-echo "[+] rebuilding"
-./prebuild.sh
-
 OSNAME="$(uname -s)"
 if [ "x${OSNAME}" = "xOpenBSD" ]; then
         echo "[+] configuring for ${OSNAME}"

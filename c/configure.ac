@@ -13,7 +13,7 @@ AC_CONFIG_HEADERS([src/config.h])
 AC_CANONICAL_HOST
 AC_MSG_WARN([need to write: tests, docs])
 #AC_CONFIG_FILES(test/Makefile doc/Makefile src/Makefile Makefile)
-AC_CONFIG_FILES([src/Makefile Makefile])
+AC_CONFIG_FILES([tests/Makefile src/Makefile Makefile])
 AC_PROG_CC
 AM_PROG_CC_C_O
 AC_PROG_INSTALL

@@ -7,12 +7,12 @@ echo "[+] setting up automake"
 # if AUTOMAKE + ACLOCAL are not set, explicity search
 # for automake-1.{10,11,12} and aclocal-1.{10,11,12}
 if [ -z "$AUTOMAKE" -o -z "$ACLOCAL" -o -z "$AUTOMAKE_VERSION" ]; then
-    if   [ -x "`which automake-1.10 2>/dev/null`" ] &&
-         [ -x "`which aclocal-1.10 2>/dev/null`" ]; then
-        echo "    [*] found automake 1.10"
-        AUTOMAKE=automake-1.10
-        ACLOCAL=aclocal-1.10
-        AUTOMAKE_VERSION=1.10
+    if [ -x "`which automake-1.12 2>/dev/null`" ] &&
+         [ -x "`which aclocal-1.12 2>/dev/null`" ]; then
+        echo "    [*] found automake 1.12"
+        AUTOMAKE=automake-1.12
+        ACLOCAL=aclocal-1.12
+        AUTOMAKE_VERSION=1.12
         export AUTOMAKE ACLOCAL
     elif [ -x "`which automake-1.11 2>/dev/null`" ] &&
          [ -x "`which aclocal-1.11 2>/dev/null`" ]; then
@@ -21,12 +21,12 @@ if [ -z "$AUTOMAKE" -o -z "$ACLOCAL" -o -z "$AUTOMAKE_VERSION" ]; then
         ACLOCAL=aclocal-1.11
         AUTOMAKE_VERSION=1.11
         export AUTOMAKE ACLOCAL AUTOMAKE_VERSION
-    elif [ -x "`which automake-1.12 2>/dev/null`" ] &&
-         [ -x "`which aclocal-1.12 2>/dev/null`" ]; then
-        echo "    [*] found automake 1.12"
-        AUTOMAKE=automake-1.12
-        ACLOCAL=aclocal-1.12
-        AUTOMAKE_VERSION=1.12
+    elif [ -x "`which automake-1.10 2>/dev/null`" ] &&
+         [ -x "`which aclocal-1.10 2>/dev/null`" ]; then
+        echo "    [*] found automake 1.10"
+        AUTOMAKE=automake-1.10
+        ACLOCAL=aclocal-1.10
+        AUTOMAKE_VERSION=1.10
         export AUTOMAKE ACLOCAL
      else
         echo "    [*] using default automake"
