@@ -19,5 +19,13 @@
 #ifndef __VOLTAIRE_HASH_H
 #define __VOLTAIRE_HASH_H
 
+#include <stdint.h>
+#include <stdlib.h>
+
+int     voltaire_get_hashlen();
+int     voltaire_get_hexhashlen();
+int     voltaire_hash_data(uint8_t *, size_t, uint8_t *);
+int     voltaire_hexhash_data(uint8_t *, size_t, uint8_t *);
+
 
 #endif
