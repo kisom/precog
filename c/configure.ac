@@ -7,6 +7,8 @@ AM_INIT_AUTOMAKE([1.12 foreign no-define color-tests parallel-tests])
 AM_SILENT_RULES([yes])
 AC_CONFIG_SRCDIR([src/vindex.h])
 AC_CHECK_HEADERS
+AC_CHECK_HEADER([sys/queue.h], [], 
+    [AC_MSG_ERROR([can't find queue library])])
 AC_CONFIG_HEADERS([src/config.h])
 AC_CANONICAL_HOST
 AC_MSG_WARN([need to write: tests, docs])
