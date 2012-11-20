@@ -6,4 +6,5 @@ AM_CFLAGS = -Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-align \
 AM_CFLAGS = -Wall -g -I/usr/local/include -DGCRYPT_NO_DEPRECATED
 lib_LIBRARIES = libvoltaire.a
 include_HEADERS = vindex.h
-libvoltaire_a_SOURCES = vindex.c vindex.h hash.c hash.h
+libvoltaire_a_SOURCES = vindex.c vindex.h hash.c hash.h makedir.c         \
+                        makedir.h
