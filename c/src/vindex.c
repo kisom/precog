@@ -17,7 +17,9 @@
  */
 
 
+#include <sys/types.h>
 #include <sys/queue.h>
+#include <sys/stat.h>
 #include <err.h>
 #include <fcntl.h>
 #include <limits.h>
@@ -213,19 +215,19 @@ voltaire_bucket_dump(struct vbucket *bkt, const char *topdir)
         ssize_t          wrsz;
         char             filename[FILENAME_MAX];
         char            *bucket_name;
-        int              bucket_fd, rv;
+        int              bucket_fd;
 
-        bucket_name = voltaire_bucket_filename(bkt->hash);
+        bucket_name = voltaire_bucket_filename((char *)bkt->hash);
         if (NULL == bucket_name)
                 return EXIT_FAILURE;
         snprintf(filename, FILENAME_MAX, "%s/%s", topdir, bucket_name);
 
-        bucket_fd = open(filename, O_WRONLY|O_CREAT|O_TRUNCATE,
+        bucket_fd = open(filename, O_WRONLY|O_CREAT|O_TRUNC,
             S_IRUSR | S_IWUSR);
-        if (bucket < 1)
+        if (bucket_fd < 1)
                 return EXIT_FAILURE;
 
-        wrsz = write(bucket_fd, bkt->value_len, sizeof(bkt->value_len));
+        wrsz = write(bucket_fd, &bkt->value_len, sizeof(bkt->value_len));
         if (wrsz != sizeof(bkt->value_len)) {
                 close(bucket_fd);
                 return EXIT_FAILURE;
@@ -236,9 +238,20 @@ voltaire_bucket_dump(struct vbucket *bkt, const char *topdir)
                 return EXIT_FAILURE;
         }
         TAILQ_FOREACH(current_key, bkt->keys, keys) {
-                wrsz = write(bucket_fd, current_key->name_len, sizeof(name_len));
-
+                wrsz = write(bucket_fd, &current_key->name_len,
+                    sizeof(current_key->name_len));
+                if (wrsz != sizeof(current_key->name_len)) {
+                        close(bucket_fd);
+                        return EXIT_FAILURE;
+                }
                 wrsz = write(bucket_fd, current_key->name,
                     sizeof(current_key->name) * current_key->name_len);
+                if (wrsz != current_key->name_len) {
+                        close(bucket_fd);
+                        return EXIT_FAILURE;
+                }
         }
+        if (close(bucket_fd))
+                return EXIT_FAILURE;
+        return EXIT_SUCCESS;
 }

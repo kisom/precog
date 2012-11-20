@@ -46,5 +46,6 @@ int              voltaire_bucket_add(struct vbucket *, char *, uint64_t);
 int              voltaire_bucket_has(struct vbucket *, char *, uint64_t);
 int              voltaire_bucket_del(struct vbucket *, char *, uint64_t);
 int              voltaire_bucket_destroy(struct vbucket **);
+int              voltaire_bucket_dump(struct vbucket *, const char *);
 
 #endif
