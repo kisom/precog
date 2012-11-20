@@ -10,4 +10,5 @@ AM_LDFLAGS = -L/usr/local/lib -lcunit
 include_HEADERS = *.h
 check_PROGRAMS = hash_test vindex_test
 hash_test_SOURCES = ../src/hash.c hash_test.c
-vindex_test_SOURCES = ../src/vindex.c ../src/hash.c vindex_test.c
+vindex_test_SOURCES = ../src/vindex.c ../src/hash.c ../src/makedir.c      \
+                      vindex_test.c
