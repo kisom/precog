@@ -26,9 +26,12 @@
 #include <sysexits.h>
 
 #include "hash.h"
+#include "makedir.h"
 #include "vindex.h"
 
+void    test_filename_simple(void);
 void    test_simple_bucket(void);
+void    test_bucket_dump(void);
 
 
 /*
@@ -105,9 +108,35 @@ test_simple_bucket()
         CU_ASSERT(!voltaire_bucket_has(bucket, "bar", (uint64_t)3));
         rv = voltaire_bucket_del(bucket, "foo", (uint64_t)3);
         CU_ASSERT(1 == rv);
-        if (1 == rv)
-                bucket = NULL;
-        CU_ASSERT(NULL == bucket);
+}
+
+
+/*
+ * ensure that the bucket file is written successfully
+ */
+void
+test_bucket_dump()
+{
+        char             filename[FILENAME_MAX+1];
+        char             testval[] = "hello, world";
+        char             testkey[] = "foo";
+        char             testdata[] = "testdata";
+        uint64_t         tv_len;
+        uint64_t         tk_len;
+        char            *tmp_filename;
+        struct vbucket  *bucket;
+
+        tv_len = strlen(testval);
+        tk_len = strlen(testkey);
+        bucket = voltaire_bucket_create((uint8_t *)testval, tv_len, testkey,
+            tk_len);
+        tmp_filename = voltaire_bucket_filename((char *)bucket->hash);
+        snprintf(filename, FILENAME_MAX, "%s/%s", testdata, tmp_filename);
+        free(tmp_filename);
+
+        CU_ASSERT(EXIT_SUCCESS == voltaire_bucket_dump(bucket, testdata));
+        CU_ASSERT(EXISTS_FILE == path_exists(filename, strlen(filename)));
+        CU_ASSERT(1 == voltaire_bucket_destroy(&bucket));
 }
 
 
@@ -139,6 +168,10 @@ main(void)
 
         if (NULL == CU_add_test(vindex_suite, "simple bucket test",
                     test_simple_bucket))
+                destroy_test_registry();
+
+        if (NULL == CU_add_test(vindex_suite, "bucket dump",
+                    test_bucket_dump))
                 destroy_test_registry();
 
         CU_basic_set_mode(CU_BRM_VERBOSE);
