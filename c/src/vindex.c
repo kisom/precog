@@ -98,7 +98,7 @@ struct vbucket
                 if (EXIT_SUCCESS == voltaire_bucket_add(bkt, ikey, ikey_len))
                         bkt->nkeys = 1;
                 else
-                        voltaire_bucket_destroy(bkt);
+                        voltaire_bucket_destroy(&bkt);
         }
 
         return bkt;
@@ -176,7 +176,7 @@ voltaire_bucket_del(struct vbucket *bkt, char *key, uint64_t keylen)
                 bkt->nkeys--;
         }
         if (0 == bkt->nkeys || TAILQ_EMPTY(bkt->keys))
-                return (0 == voltaire_bucket_destroy(bkt));
+                return (0 == voltaire_bucket_destroy(&bkt));
 
         return 1;
 }
@@ -186,19 +186,19 @@ voltaire_bucket_del(struct vbucket *bkt, char *key, uint64_t keylen)
  * Destroy the bucket.
  */
 int
-voltaire_bucket_destroy(struct vbucket *bkt) {
+voltaire_bucket_destroy(struct vbucket **bktp) {
         struct key      *current_key;
 
-        while ((current_key = TAILQ_FIRST(bkt->keys))) {
+        while ((current_key = TAILQ_FIRST((*bktp)->keys))) {
                 printf("[-] removing key %s\n", current_key->name);
                 free(current_key->name);
-                TAILQ_REMOVE(bkt->keys, current_key, keys);
+                TAILQ_REMOVE((*bktp)->keys, current_key, keys);
         }
-        free(bkt->keys);
-        free(bkt->hash);
-        free(bkt->value);
-        free(bkt);
-        bkt = NULL;
+        free((*bktp)->keys);
+        free((*bktp)->hash);
+        free((*bktp)->value);
+        free(*bktp);
+        *bktp = NULL;
         return 0;
 }
 
