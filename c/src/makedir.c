@@ -34,20 +34,10 @@ struct dirlst {
 TAILQ_HEAD(tq_dirlst, dirlst);
 
 
-enum EXISTS_STATUS {
-        EXISTS_ERROR,
-        EXISTS_NOENT,
-        EXISTS_NOPERM,
-        EXISTS_DIR,
-        EXISTS_FILE
-};
-
-
 struct tq_dirlst        *dirlst_create(const char *, size_t);
 int                      dirlst_push(struct tq_dirlst *, const char *, size_t);
 struct dirlst           *dirlst_pop(struct tq_dirlst *);
 int                      dirlst_destroy(struct tq_dirlst **);
-enum EXISTS_STATUS       path_exists(const char *, size_t);
 
 
 /*
@@ -124,7 +114,7 @@ dirlst_destroy(struct tq_dirlst **lstp)
 /*
  * Determines whether a directory exists.
  */
-enum EXISTS_STATUS
+EXISTS_STATUS
 path_exists(const char *path, size_t pathlen)
 {
         struct stat     st;
@@ -159,12 +149,13 @@ path_exists(const char *path, size_t pathlen)
 int
 makedirs(const char *path, size_t path_sz)
 {
-        struct tq_lst   *lst;
+        struct tq_dirlst   *lst;
 
         lst = dirlst_create(path, path_sz);
         if (NULL == lst)
                 return EXIT_FAILURE;
 
+        return EXIT_FAILURE;
 }
 
 

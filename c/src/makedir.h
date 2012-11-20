@@ -24,8 +24,19 @@
 #include <sys/queue.h>
 #include <stdio.h>
 
-int     makedirs(const char *, size_t);
-int     rmdirs(const char *, size_t);
+enum E_EXISTS_STATUS {
+        EXISTS_ERROR,
+        EXISTS_NOENT,
+        EXISTS_NOPERM,
+        EXISTS_DIR,
+        EXISTS_FILE
+};
+typedef enum E_EXISTS_STATUS EXISTS_STATUS;
+
+
+int             makedirs(const char *, size_t);
+int             rmdirs(const char *, size_t);
+EXISTS_STATUS   path_exists(const char *, size_t);
 
 
 #endif
